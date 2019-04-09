@@ -1,1 +1,1 @@
-# spring-boot-2-simple-example
+# Simple Example of 'Spring Boot 2'
