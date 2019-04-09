@@ -19,7 +19,7 @@ public class SimpleController {
     private final SimpleService simpleService;
 
     @RequestMapping(method = {RequestMethod.GET})
-    public SimpleResponse findAll() {
+    public SimpleResponse findAllSimpleResponse() {
         final var list = simpleService.findAllSimple();
 
         return SimpleResponse.builder().simpleList(list).build();
