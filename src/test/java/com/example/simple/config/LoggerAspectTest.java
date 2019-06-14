@@ -1,6 +1,7 @@
 package com.example.simple.config;
 
-import com.example.simple.domain.Simple;
+import lombok.AllArgsConstructor;
+import lombok.ToString;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.junit.jupiter.api.Test;
@@ -20,9 +21,9 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class LoggerAspectTest {
 
-    private final String headerTrace = " : Invoked class [LoggerAspectTest$TestService$MockitoMock$";
-    private final String inputTrace = ".methodName] | Input Args [EMPTY]";
-    private final String outputTrace = ".methodName] | Output Response [[Simple(documentId=null, id=00, name=Test)]]";
+    private static final String HEADER_TRACE = " : Invoked class [LoggerAspectTest$TestService$MockitoMock$";
+    private static final String INPUT_TRACE = ".methodName] | Input Args [EMPTY]";
+    private static final String OUTPUT_TRACE = ".methodName] | Output Response [[LoggerAspectTest.Response(id=00, name=Test)]]";
 
     @Mock
     private ProceedingJoinPoint joinPoint;
@@ -42,7 +43,7 @@ class LoggerAspectTest {
         when(joinPoint.getSignature()).thenReturn(signature);
         when(joinPoint.getSignature().getName()).thenReturn("methodName");
         when(joinPoint.getArgs()).thenReturn(new String[0]);
-        when(joinPoint.proceed()).thenReturn(List.of(Simple.builder().id("00").name("Test").build()));
+        when(joinPoint.proceed()).thenReturn(List.of(new Response("00", "Test")));
 
         // Create a stream to hold the output
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
@@ -63,12 +64,19 @@ class LoggerAspectTest {
         System.out.println(trace);
 
         assertAll(
-                () -> assertEquals(2, StringUtils.countOccurrencesOf(trace, headerTrace)),
-                () -> assertTrue(trace.contains(inputTrace)),
-                () -> assertTrue(trace.contains(outputTrace))
+                () -> assertEquals(2, StringUtils.countOccurrencesOf(trace, HEADER_TRACE)),
+                () -> assertTrue(trace.contains(INPUT_TRACE)),
+                () -> assertTrue(trace.contains(OUTPUT_TRACE))
         );
     }
 
     private interface TestService {
+    }
+
+    @AllArgsConstructor
+    @ToString
+    private class Response {
+        private String id;
+        private String name;
     }
 }
