@@ -20,4 +20,17 @@ public class SimpleServiceImpl implements SimpleService {
 
         return simpleList != null ? simpleList : Collections.EMPTY_LIST;
     }
+
+    @Override
+    public Simple findSimpleById(String simpleId) throws Exception {
+        final var simple = simpleRepository.findBySimpleId(simpleId);
+
+        return validateSimple(simple.orElse(null));
+    }
+
+    private Simple validateSimple(Simple simple) throws Exception {
+        if (simple == null || simple.isEmpty())
+            throw new Exception("Not exist");
+        return simple;
+    }
 }
