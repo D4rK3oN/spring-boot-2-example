@@ -18,10 +18,10 @@ import static org.mockito.Mockito.when;
 class SimpleServiceTest {
 
     private static final List<Simple> RESPONSE_OK = List.of(
-            Simple.builder().documentId("id_001").id("01").name("Domino").build(),
-            Simple.builder().documentId("id_002").id("02").name("Cable").build(),
-            Simple.builder().documentId("id_003").id("03").name("Psylocke").build(),
-            Simple.builder().documentId("id_004").id("04").name("Colossus").build()
+            Simple.builder().id("id_001").simpleId("01").name("Domino").build(),
+            Simple.builder().id("id_002").simpleId("02").name("Cable").build(),
+            Simple.builder().id("id_003").simpleId("03").name("Psylocke").build(),
+            Simple.builder().id("id_004").simpleId("04").name("Colossus").build()
     );
 
     @Mock

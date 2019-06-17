@@ -3,28 +3,28 @@
     "_id": {
       "$oid": "5cd9768a7a7aea34787394d4"
     },
-    "id": "00",
+    "simpleId": "00",
     "name": "Domino"
   },
   {
     "_id": {
       "$oid": "5cd976ab7a7aea34787394d5"
     },
-    "id": "01",
+    "simpleId": "01",
     "name": "Cable"
   },
   {
     "_id": {
       "$oid": "5a993d5d9ccd732bf541a19f"
     },
-    "id": "02",
+    "simpleId": "02",
     "name": "Psylocke"
   },
   {
     "_id": {
       "$oid": "5cd976ab7acd732bf541a19f"
     },
-    "id": "03",
+    "simpleId": "03",
     "name": "Colossus"
   }
 ]

@@ -1,12 +1,10 @@
 package com.example.simple.web;
 
+import com.example.simple.domain.Simple;
 import com.example.simple.service.SimpleService;
 import com.example.simple.web.response.SimpleResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/example")
@@ -19,5 +17,10 @@ public class SimpleController {
     @RequestMapping(method = {RequestMethod.GET})
     public SimpleResponse findAllSimpleResponse() {
         return SimpleResponse.builder().simpleList(simpleService.findAllSimple()).build();
+    }
+
+    @RequestMapping(method = {RequestMethod.GET}, path = "/{simpleId}")
+    public Simple findSimpleById(@PathVariable final String simpleId) throws Exception {
+        return simpleService.findSimpleById(simpleId);
     }
 }

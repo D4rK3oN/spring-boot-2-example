@@ -22,10 +22,10 @@ import static org.junit.jupiter.api.Assertions.*;
 class SimpleRepositoryTest {
 
     private static final List<Simple> RESPONSE_OK = List.of(
-            Simple.builder().documentId("5cd9768a7a7aea34787394d4").id("00").name("Domino").build(),
-            Simple.builder().documentId("5cd976ab7a7aea34787394d5").id("01").name("Cable").build(),
-            Simple.builder().documentId("5a993d5d9ccd732bf541a19f").id("02").name("Psylocke").build(),
-            Simple.builder().documentId("5cd976ab7acd732bf541a19f").id("03").name("Colossus").build()
+            Simple.builder().id("5cd9768a7a7aea34787394d4").simpleId("00").name("Domino").build(),
+            Simple.builder().id("5cd976ab7a7aea34787394d5").simpleId("01").name("Cable").build(),
+            Simple.builder().id("5a993d5d9ccd732bf541a19f").simpleId("02").name("Psylocke").build(),
+            Simple.builder().id("5cd976ab7acd732bf541a19f").simpleId("03").name("Colossus").build()
     );
 
     @Autowired

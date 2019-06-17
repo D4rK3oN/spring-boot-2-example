@@ -7,4 +7,6 @@ import java.util.List;
 public interface SimpleService {
 
     List<Simple> findAllSimple();
+
+    Simple findSimpleById(String simpleId) throws Exception;
 }
