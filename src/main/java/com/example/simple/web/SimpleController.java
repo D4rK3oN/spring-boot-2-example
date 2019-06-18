@@ -1,5 +1,6 @@
 package com.example.simple.web;
 
+import com.example.simple.config.exception.FunctionalException;
 import com.example.simple.domain.Simple;
 import com.example.simple.service.SimpleService;
 import com.example.simple.web.response.SimpleResponse;
@@ -20,7 +21,7 @@ public class SimpleController {
     }
 
     @RequestMapping(method = {RequestMethod.GET}, path = "/{simpleId}")
-    public Simple findSimpleById(@PathVariable final String simpleId) throws Exception {
+    public Simple findSimpleById(@PathVariable final String simpleId) throws FunctionalException {
         return simpleService.findSimpleById(simpleId);
     }
 }
