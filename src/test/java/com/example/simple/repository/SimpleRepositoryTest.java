@@ -13,15 +13,15 @@ import org.springframework.data.mongodb.core.MongoOperations;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class SimpleRepositoryTest {
 
-    private static final List<Simple> RESPONSE_OK = List.of(
+    private static final List<Simple> SIMPLE_LIST_OK = List.of(
             Simple.builder().id("5cd9768a7a7aea34787394d4").simpleId("00").name("Domino").build(),
             Simple.builder().id("5cd976ab7a7aea34787394d5").simpleId("01").name("Cable").build(),
             Simple.builder().id("5a993d5d9ccd732bf541a19f").simpleId("02").name("Psylocke").build(),
@@ -37,10 +37,9 @@ class SimpleRepositoryTest {
     @Autowired
     private SimpleRepository simpleRepository;
 
-    @Test
-    void findAllWhenExistData() throws IOException {
+    private void loadFileInMongodb(String file) throws IOException {
         final var mongodbFile = FileUtils.readFileToString(
-                new ClassPathResource("mongodb/examples.simpleObjects.data.json").getFile(),
+                new ClassPathResource(file).getFile(),
                 Charset.defaultCharset()
         );
 
@@ -50,36 +49,30 @@ class SimpleRepositoryTest {
 
         for (DBObject dbo : dboList)
             mongoOperations.save(dbo, mongoDbCollectionsConfig.getSimpleObjects());
+    }
+
+    @Test
+    void findAllWhenExistData() throws IOException {
+        loadFileInMongodb("mongodb/examples.simpleObjects.data.json");
 
         final var response = simpleRepository.findAll();
 
         assertAll(
                 () -> assertFalse(response.isEmpty()),
                 () -> assertEquals(4, response.size()),
-                () -> assertEquals(RESPONSE_OK, response)
+                () -> assertEquals(SIMPLE_LIST_OK, response)
         );
     }
 
     @Test
     void findAllWhenNoExistData() throws IOException {
-        final var mongodbFile = FileUtils.readFileToString(
-                new ClassPathResource("mongodb/examples.simpleObjects.empty.json").getFile(),
-                Charset.defaultCharset()
-        );
-
-        final List<DBObject> dboList = (List<DBObject>) JSON.parse(mongodbFile);
-
-        mongoOperations.dropCollection(mongoDbCollectionsConfig.getSimpleObjects());
-
-        for (DBObject dbo : dboList)
-            mongoOperations.save(dbo, mongoDbCollectionsConfig.getSimpleObjects());
+        loadFileInMongodb("mongodb/examples.simpleObjects.empty.json");
 
         final var response = simpleRepository.findAll();
 
         assertAll(
                 () -> assertTrue(response != null && response.isEmpty()),
-                () -> assertEquals(0, response.size()),
-                () -> assertEquals(Collections.EMPTY_LIST, response)
+                () -> assertEquals(List.of(), response)
         );
     }
 
@@ -91,8 +84,35 @@ class SimpleRepositoryTest {
 
         assertAll(
                 () -> assertTrue(response != null && response.isEmpty()),
-                () -> assertEquals(0, response.size()),
-                () -> assertEquals(Collections.EMPTY_LIST, response)
+                () -> assertEquals(List.of(), response)
+        );
+    }
+
+    @Test
+    void findBySimpleIdWhenExistData() throws IOException {
+        loadFileInMongodb("mongodb/examples.simpleObjects.data.json");
+
+        final var response = simpleRepository.findBySimpleId("00");
+
+        assertAll(
+                () -> assertTrue(response.isPresent()),
+                () -> assertEquals(Optional.of(Simple.builder()
+                        .id("5cd9768a7a7aea34787394d4")
+                        .simpleId("00")
+                        .name("Domino")
+                        .build()), response)
+        );
+    }
+
+    @Test
+    void findBySimpleIdWhenNoDataFound() throws IOException {
+        loadFileInMongodb("mongodb/examples.simpleObjects.data.json");
+
+        final var response = simpleRepository.findBySimpleId("unknown");
+
+        assertAll(
+                () -> assertFalse(response.isPresent()),
+                () -> assertEquals(Optional.empty(), response)
         );
     }
 }

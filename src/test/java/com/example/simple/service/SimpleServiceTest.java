@@ -8,7 +8,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -45,25 +44,22 @@ class SimpleServiceTest {
 
     @Test
     void findAllSimpleWhenNoDataFound() {
-        when(simpleRepository.findAll()).thenReturn(Collections.EMPTY_LIST);
+        when(simpleRepository.findAll()).thenReturn(List.of());
 
-        final var response = simpleService.findAllSimple();
+        final var emptyResponse = simpleService.findAllSimple();
 
         assertAll(
-                () -> assertTrue(response != null && response.isEmpty()),
-                () -> assertEquals(0, response.size())
+                () -> assertTrue(emptyResponse != null && emptyResponse.isEmpty()),
+                () -> assertEquals(0, emptyResponse.size())
         );
-    }
 
-    @Test
-    void findAllSimpleWhenIsNull() {
         when(simpleRepository.findAll()).thenReturn(null);
 
-        final var response = simpleService.findAllSimple();
+        final var nullResponse = simpleService.findAllSimple();
 
         assertAll(
-                () -> assertTrue(response != null && response.isEmpty()),
-                () -> assertEquals(0, response.size())
+                () -> assertTrue(nullResponse != null && nullResponse.isEmpty()),
+                () -> assertEquals(0, nullResponse.size())
         );
     }
 }
