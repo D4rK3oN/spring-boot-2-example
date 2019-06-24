@@ -1,4 +1,4 @@
-package com.example.simple.config.util;
+package com.example.simple.util;
 
 import lombok.Getter;
 import org.springframework.http.HttpStatus;

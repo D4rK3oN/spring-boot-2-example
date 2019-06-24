@@ -1,7 +1,7 @@
 package com.example.simple.config;
 
-import com.example.simple.config.response.GlobalExceptionResponse;
-import com.example.simple.config.util.ExceptionEnum;
+import com.example.simple.web.response.GlobalExceptionResponse;
+import com.example.simple.util.ExceptionEnum;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

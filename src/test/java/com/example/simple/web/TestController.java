@@ -1,7 +1,7 @@
 package com.example.simple.web;
 
-import com.example.simple.config.exception.FunctionalException;
-import com.example.simple.config.util.ExceptionEnum;
+import com.example.simple.util.FunctionalException;
+import com.example.simple.util.ExceptionEnum;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
