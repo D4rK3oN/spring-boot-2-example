@@ -35,7 +35,7 @@ class SimpleServiceTest {
     void findAllSimpleWhenOk() {
         when(simpleRepository.findAll()).thenReturn(SIMPLE_LIST_OK);
 
-        final var response = simpleService.findAllSimple();
+        final var response = simpleService.findAllSimple(Optional.empty());
 
         assertAll(
                 () -> assertTrue(response != null && !response.isEmpty()),
@@ -48,7 +48,7 @@ class SimpleServiceTest {
     void findAllSimpleWhenNoDataFound() {
         when(simpleRepository.findAll()).thenReturn(List.of());
 
-        final var emptyResponse = simpleService.findAllSimple();
+        final var emptyResponse = simpleService.findAllSimple(Optional.empty());
 
         assertAll(
                 () -> assertTrue(emptyResponse != null && emptyResponse.isEmpty()),
@@ -57,11 +57,25 @@ class SimpleServiceTest {
 
         when(simpleRepository.findAll()).thenReturn(null);
 
-        final var nullResponse = simpleService.findAllSimple();
+        final var nullResponse = simpleService.findAllSimple(Optional.empty());
 
         assertAll(
                 () -> assertTrue(nullResponse != null && nullResponse.isEmpty()),
                 () -> assertEquals(0, nullResponse.size())
+        );
+    }
+
+    @Test
+    void findAllSimpleByNameWhenOk() {
+        when(simpleRepository.findAllByNameIgnoreCaseLike(SIMPLE_LIST_OK.get(0).getName()))
+                .thenReturn(List.of(SIMPLE_LIST_OK.get(0)));
+
+        final var response = simpleService.findAllSimple(Optional.of(SIMPLE_LIST_OK.get(0).getName()));
+
+        assertAll(
+                () -> assertTrue(response != null && !response.isEmpty()),
+                () -> assertEquals(1, response.size()),
+                () -> assertEquals(List.of(SIMPLE_LIST_OK.get(0)), response)
         );
     }
 

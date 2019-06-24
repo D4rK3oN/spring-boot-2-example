@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.ConstraintViolationException;
 
 @Slf4j
 @Order(Ordered.HIGHEST_PRECEDENCE)
@@ -32,6 +33,26 @@ public class GlobalExceptionHandler {
         return GlobalExceptionResponse.builder()
                 .code(ExceptionEnum.INTERNAL_SERVER_ERROR.getHttpStatus().value())
                 .message(ExceptionEnum.INTERNAL_SERVER_ERROR.getMessage())
+                .detail(ex.getClass().getSimpleName()
+                        .concat(" : ")
+                        .concat(ex.getMessage()))
+                .build();
+    }
+
+    /**
+     * Constraint violation exceptions
+     *
+     * @param ex ConstraintViolationException
+     * @return GlobalExceptionResponse
+     */
+    @ExceptionHandler(ConstraintViolationException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public GlobalExceptionResponse constraintExceptionHandler(Exception ex) {
+        log.error("Exception thrown [{}]", ex.getClass().getSimpleName(), ex);
+
+        return GlobalExceptionResponse.builder()
+                .code(ExceptionEnum.INVALID_INPUT_PARAMETERS.getHttpStatus().value())
+                .message(ExceptionEnum.INVALID_INPUT_PARAMETERS.getMessage())
                 .detail(ex.getClass().getSimpleName()
                         .concat(" : ")
                         .concat(ex.getMessage()))
