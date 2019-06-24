@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -16,8 +17,10 @@ public class SimpleServiceImpl implements SimpleService {
     private final SimpleRepository simpleRepository;
 
     @Override
-    public List<Simple> findAllSimple() {
-        final var simpleList = simpleRepository.findAll();
+    public List<Simple> findAllSimple(Optional<String> name) {
+        final var simpleList = name.isPresent()
+                ? simpleRepository.findAllByNameIgnoreCaseLike(name.get())
+                : simpleRepository.findAll();
 
         return simpleList != null ? simpleList : List.of();
     }

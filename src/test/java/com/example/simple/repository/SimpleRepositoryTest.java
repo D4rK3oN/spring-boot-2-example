@@ -115,4 +115,32 @@ class SimpleRepositoryTest {
                 () -> assertEquals(Optional.empty(), response)
         );
     }
+
+    @Test
+    void findByNameWhenExistData() throws IOException {
+        loadFileInMongodb("mongodb/examples.simpleObjects.data.json");
+
+        final var response = simpleRepository.findAllByNameIgnoreCaseLike("domi");
+
+        assertAll(
+                () -> assertFalse(response.isEmpty()),
+                () -> assertEquals(List.of(Simple.builder()
+                        .id("5cd9768a7a7aea34787394d4")
+                        .simpleId("00")
+                        .name("Domino")
+                        .build()), response)
+        );
+    }
+
+    @Test
+    void findByNameWhenNoDataFound() throws IOException {
+        loadFileInMongodb("mongodb/examples.simpleObjects.data.json");
+
+        final var response = simpleRepository.findAllByNameIgnoreCaseLike("unknown");
+
+        assertAll(
+                () -> assertTrue(response.isEmpty()),
+                () -> assertEquals(List.of(), response)
+        );
+    }
 }

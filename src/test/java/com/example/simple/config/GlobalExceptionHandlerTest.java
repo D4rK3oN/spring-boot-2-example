@@ -37,6 +37,23 @@ class GlobalExceptionHandlerTest {
     }
 
     @Test
+    void testConstraintViolationExceptionHandler() {
+        UriComponentsBuilder builder = UriComponentsBuilder.fromPath(PATH.concat("/constraintViolationException"));
+
+        final var response = testRestTemplate.getForEntity(builder.build().toUri(), GlobalExceptionResponse.class);
+
+        assertAll(
+                () -> assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode()),
+                () -> assertNotNull(response.getBody()),
+                () -> assertEquals(GlobalExceptionResponse.builder()
+                        .code(ExceptionEnum.INVALID_INPUT_PARAMETERS.getHttpStatus().value())
+                        .message(ExceptionEnum.INVALID_INPUT_PARAMETERS.getMessage())
+                        .detail("ConstraintViolationException : ")
+                        .build(), response.getBody())
+        );
+    }
+
+    @Test
     void testFunctionalExceptionHandler() {
         UriComponentsBuilder builder = UriComponentsBuilder.fromPath(PATH.concat("/functionalException"));
 

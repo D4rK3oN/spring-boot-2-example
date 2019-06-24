@@ -7,6 +7,7 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 
@@ -87,7 +88,7 @@ public class LoggerAspect {
         logger.info("Invoked class [{}.{}] | Input Args [{}]",
                 joinPoint.getTarget().getClass().getSimpleName(),
                 joinPoint.getSignature().getName(),
-                List.of(joinPoint.getArgs()).isEmpty() ? "EMPTY" : joinPoint.getArgs());
+                CollectionUtils.arrayToList(joinPoint.getArgs()).isEmpty() ? "EMPTY" : joinPoint.getArgs());
     }
 
     /**

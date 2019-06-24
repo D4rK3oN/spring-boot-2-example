@@ -16,6 +16,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
@@ -39,7 +40,7 @@ class SimpleControllerTest {
 
     @Test
     void findAllSimpleResponseWhenOk() {
-        when(simpleService.findAllSimple()).thenReturn(SIMPLE_LIST_OK);
+        when(simpleService.findAllSimple(Optional.empty())).thenReturn(SIMPLE_LIST_OK);
 
         UriComponentsBuilder builder = UriComponentsBuilder.fromPath(PATH);
 
@@ -61,7 +62,7 @@ class SimpleControllerTest {
 
     @Test
     void findAllSimpleResponseWhenNoDataFound() {
-        when(simpleService.findAllSimple()).thenReturn(Collections.EMPTY_LIST);
+        when(simpleService.findAllSimple(Optional.empty())).thenReturn(Collections.EMPTY_LIST);
 
         UriComponentsBuilder builder = UriComponentsBuilder.fromPath(PATH);
 
