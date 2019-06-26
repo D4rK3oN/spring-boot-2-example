@@ -1,8 +1,8 @@
 package com.example.simple.config;
 
-import com.example.simple.config.exception.FunctionalException;
-import com.example.simple.config.response.GlobalExceptionResponse;
-import com.example.simple.config.util.ExceptionEnum;
+import com.example.simple.util.FunctionalException;
+import com.example.simple.web.response.GlobalExceptionResponse;
+import com.example.simple.util.ExceptionEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;

@@ -1,4 +1,4 @@
-package com.example.simple.config.response;
+package com.example.simple.web.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

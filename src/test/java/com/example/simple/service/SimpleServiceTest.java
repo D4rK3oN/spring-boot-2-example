@@ -1,6 +1,6 @@
 package com.example.simple.service;
 
-import com.example.simple.config.exception.FunctionalException;
+import com.example.simple.util.FunctionalException;
 import com.example.simple.domain.Simple;
 import com.example.simple.repository.SimpleRepository;
 import org.junit.jupiter.api.Test;

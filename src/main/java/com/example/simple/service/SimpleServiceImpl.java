@@ -1,7 +1,7 @@
 package com.example.simple.service;
 
-import com.example.simple.config.exception.FunctionalException;
-import com.example.simple.config.util.ExceptionEnum;
+import com.example.simple.util.FunctionalException;
+import com.example.simple.util.ExceptionEnum;
 import com.example.simple.domain.Simple;
 import com.example.simple.repository.SimpleRepository;
 import lombok.RequiredArgsConstructor;

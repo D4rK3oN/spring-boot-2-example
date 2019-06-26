@@ -1,6 +1,6 @@
 package com.example.simple.web;
 
-import com.example.simple.config.exception.FunctionalException;
+import com.example.simple.util.FunctionalException;
 import com.example.simple.domain.Simple;
 import com.example.simple.service.SimpleService;
 import com.example.simple.web.response.SimpleResponse;
