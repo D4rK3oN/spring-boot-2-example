@@ -37,7 +37,7 @@ public class SimpleController {
     }
 
     @RequestMapping(method = {RequestMethod.PUT}, path = "/{simpleId}")
-    public ResponseEntity saveSimple(@PathVariable @NotEmpty final String simpleId, @RequestBody Simple simple)
+    public ResponseEntity<?> saveSimple(@PathVariable @NotEmpty final String simpleId, @RequestBody Simple simple)
             throws FunctionalException {
         simpleService.saveSimple(simpleId, simple);
 
@@ -47,5 +47,12 @@ public class SimpleController {
                         .buildAndExpand(simpleId)
                         .toUri()
         ).build();
+    }
+
+    @RequestMapping(method = {RequestMethod.DELETE}, path = "/{simpleId}")
+    public ResponseEntity<?> saveSimpleById(@PathVariable @NotEmpty final String simpleId) throws FunctionalException {
+        simpleService.deleteSimpleById(simpleId);
+
+        return ResponseEntity.accepted().build();
     }
 }

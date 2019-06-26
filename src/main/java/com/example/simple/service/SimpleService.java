@@ -13,4 +13,6 @@ public interface SimpleService {
     Simple findSimpleById(String simpleId) throws FunctionalException;
 
     void saveSimple(String simpleId, Simple simple) throws FunctionalException;
+
+    void deleteSimpleById(String simpleId) throws FunctionalException;
 }
