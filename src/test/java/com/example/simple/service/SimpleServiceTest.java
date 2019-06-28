@@ -1,18 +1,21 @@
 package com.example.simple.service;
 
-import com.example.simple.util.FunctionalException;
 import com.example.simple.domain.Simple;
 import com.example.simple.repository.SimpleRepository;
+import com.example.simple.util.FunctionalException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.dao.DuplicateKeyException;
 
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -102,5 +105,20 @@ class SimpleServiceTest {
         when(simpleRepository.findBySimpleId("00")).thenReturn(Optional.empty());
 
         assertThrows(FunctionalException.class, () -> simpleService.findSimpleById("00"));
+    }
+
+    @Test
+    void saveSimpleWhenIdAlreadyExist() {
+        when(simpleRepository.save(Simple.builder().simpleId("01").name("Testing").build()))
+                .thenThrow(new DuplicateKeyException("Duplicate key error"));
+
+        assertThrows(FunctionalException.class, () -> simpleService.saveSimple("01", Simple.builder().name("Testing").build()));
+    }
+
+    @Test
+    void deleteSimpleWhenNoDataFoundById() {
+        when(simpleRepository.findBySimpleId("01")).thenReturn(Optional.empty());
+
+        assertThrows(FunctionalException.class, () -> simpleService.deleteSimple("01"));
     }
 }
