@@ -39,7 +39,7 @@ class SimpleControllerTest {
     private TestRestTemplate testRestTemplate;
 
     @Test
-    void findAllSimpleResponseWhenOk() {
+    void findAllSimpleWhenOk() {
         when(simpleService.findAllSimple(Optional.empty())).thenReturn(SIMPLE_LIST_OK);
 
         UriComponentsBuilder builder = UriComponentsBuilder.fromPath(PATH);
@@ -61,7 +61,7 @@ class SimpleControllerTest {
     }
 
     @Test
-    void findAllSimpleResponseWhenNoDataFound() {
+    void findAllSimpleWhenNoDataFound() {
         when(simpleService.findAllSimple(Optional.empty())).thenReturn(Collections.EMPTY_LIST);
 
         UriComponentsBuilder builder = UriComponentsBuilder.fromPath(PATH);

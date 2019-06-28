@@ -37,9 +37,15 @@ class SimpleRepositoryTest {
     @Autowired
     private SimpleRepository simpleRepository;
 
-    private void loadFileInMongodb(String file) throws IOException {
+    /**
+     * Load the JSON file in the embed Mongodb.
+     *
+     * @param path
+     * @throws IOException
+     */
+    private void loadFileInMongodb(String path) throws IOException {
         final var mongodbFile = FileUtils.readFileToString(
-                new ClassPathResource(file).getFile(),
+                new ClassPathResource(path).getFile(),
                 Charset.defaultCharset()
         );
 

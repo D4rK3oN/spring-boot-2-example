@@ -14,5 +14,5 @@ public interface SimpleService {
 
     void saveSimple(String simpleId, Simple simple) throws FunctionalException;
 
-    void deleteSimpleById(String simpleId) throws FunctionalException;
+    void deleteSimple(String simpleId) throws FunctionalException;
 }

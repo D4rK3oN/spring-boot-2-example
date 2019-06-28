@@ -53,7 +53,7 @@ public class SimpleServiceImpl implements SimpleService {
     }
 
     @Override
-    public void deleteSimpleById(String simpleId) throws FunctionalException {
+    public void deleteSimple(String simpleId) throws FunctionalException {
         simpleRepository.delete(findSimpleToDeleteBySimpleId(simpleId));
     }
 

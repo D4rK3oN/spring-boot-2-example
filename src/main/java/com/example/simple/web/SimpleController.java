@@ -24,7 +24,7 @@ public class SimpleController {
     private final SimpleService simpleService;
 
     @RequestMapping(method = {RequestMethod.GET})
-    public SimpleResponse findAllSimpleResponse(
+    public SimpleResponse findAllSimple(
             @RequestParam(value = "name", required = false)
             @Size(min = 3, message = "The length of the name must be 3 or greater") final String name
     ) {
@@ -50,8 +50,8 @@ public class SimpleController {
     }
 
     @RequestMapping(method = {RequestMethod.DELETE}, path = "/{simpleId}")
-    public ResponseEntity<?> saveSimpleById(@PathVariable @NotEmpty final String simpleId) throws FunctionalException {
-        simpleService.deleteSimpleById(simpleId);
+    public ResponseEntity<?> deleteSimple(@PathVariable @NotEmpty final String simpleId) throws FunctionalException {
+        simpleService.deleteSimple(simpleId);
 
         return ResponseEntity.accepted().build();
     }
