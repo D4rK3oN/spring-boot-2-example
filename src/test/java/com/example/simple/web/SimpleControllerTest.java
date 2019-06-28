@@ -1,25 +1,27 @@
 package com.example.simple.web;
 
-import com.example.simple.util.FunctionalException;
-import com.example.simple.web.response.GlobalExceptionResponse;
-import com.example.simple.util.ExceptionEnum;
 import com.example.simple.domain.Simple;
 import com.example.simple.service.SimpleService;
+import com.example.simple.util.ExceptionEnum;
+import com.example.simple.util.FunctionalException;
+import com.example.simple.web.response.GlobalExceptionResponse;
 import com.example.simple.web.response.SimpleResponse;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class SimpleControllerTest {
@@ -115,6 +117,107 @@ class SimpleControllerTest {
                         .code(ExceptionEnum.NO_DATA_FOUND.getHttpStatus().value())
                         .message(ExceptionEnum.NO_DATA_FOUND.getMessage())
                         .detail("ID [00] not exist")
+                        .build(), response.getBody())
+        );
+    }
+
+    @Test
+    void saveSimpleWhenOk() {
+        doNothing().when(simpleService).saveSimple(eq("01"), any(Simple.class));
+
+        UriComponentsBuilder builder = UriComponentsBuilder.fromPath(PATH.concat("/01"));
+
+        final HttpEntity<Map<String, String>> request = new HttpEntity<>(
+                new HashMap<>() {
+                    {
+                        put("name", "Testing Name");
+                    }
+                }
+        );
+
+        final var response = testRestTemplate
+                .exchange(builder.build().toUri(), HttpMethod.PUT, request, ResponseEntity.class);
+
+        assertAll(
+                () -> assertEquals(HttpStatus.CREATED, response.getStatusCode()),
+                () -> assertNull(response.getBody()),
+                () -> assertNotNull(response.getHeaders()),
+                () -> assertFalse(response.getHeaders().isEmpty()),
+                () -> assertNotNull(response.getHeaders().get("Location")),
+                () -> assertFalse(Objects.requireNonNull(response.getHeaders().get("Location")).isEmpty()),
+                () -> assertEquals("/example/01", Objects.requireNonNull(response.getHeaders().get("Location")).get(0))
+        );
+    }
+
+    @Test
+    void saveSimpleWhenIdAlreadyExist() {
+        doThrow(
+                new FunctionalException(
+                        "Testing duplicate key exception in saveSimple method",
+                        ExceptionEnum.CONFLICT,
+                        "Index <simpleId> : duplicate key [01]")
+        ).when(simpleService).saveSimple(eq("01"), any(Simple.class));
+
+        UriComponentsBuilder builder = UriComponentsBuilder.fromPath(PATH.concat("/01"));
+
+        final HttpEntity<Map<String, String>> request = new HttpEntity<>(
+                new HashMap<>() {
+                    {
+                        put("name", "Testing Name");
+                    }
+                }
+        );
+
+        final var response = testRestTemplate
+                .exchange(builder.build().toUri(), HttpMethod.PUT, request, GlobalExceptionResponse.class);
+
+        assertAll(
+                () -> assertEquals(HttpStatus.CONFLICT, response.getStatusCode()),
+                () -> assertNotNull(response.getBody()),
+                () -> assertEquals(GlobalExceptionResponse.builder()
+                        .code(ExceptionEnum.CONFLICT.getHttpStatus().value())
+                        .message(ExceptionEnum.CONFLICT.getMessage())
+                        .detail("Index <simpleId> : duplicate key [01]")
+                        .build(), response.getBody())
+        );
+    }
+
+    @Test
+    void deleteSimpleWhenOk() {
+        doNothing().when(simpleService).deleteSimple(eq("01"));
+
+        UriComponentsBuilder builder = UriComponentsBuilder.fromPath(PATH.concat("/01"));
+
+        final var response = testRestTemplate
+                .exchange(builder.build().toUri(), HttpMethod.DELETE, HttpEntity.EMPTY, ResponseEntity.class);
+
+        assertAll(
+                () -> assertEquals(HttpStatus.ACCEPTED, response.getStatusCode()),
+                () -> assertNull(response.getBody())
+        );
+    }
+
+    @Test
+    void deleteSimpleWhenIdNotExist() {
+        doThrow(
+                new FunctionalException(
+                        "Resource to delete not found",
+                        ExceptionEnum.NO_DATA_FOUND,
+                        "ID [01] not exist")
+        ).when(simpleService).deleteSimple(eq("01"));
+
+        UriComponentsBuilder builder = UriComponentsBuilder.fromPath(PATH.concat("/01"));
+
+        final var response = testRestTemplate
+                .exchange(builder.build().toUri(), HttpMethod.DELETE, HttpEntity.EMPTY, GlobalExceptionResponse.class);
+
+        assertAll(
+                () -> assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode()),
+                () -> assertNotNull(response.getBody()),
+                () -> assertEquals(GlobalExceptionResponse.builder()
+                        .code(ExceptionEnum.NO_DATA_FOUND.getHttpStatus().value())
+                        .message(ExceptionEnum.NO_DATA_FOUND.getMessage())
+                        .detail("ID [01] not exist")
                         .build(), response.getBody())
         );
     }

@@ -9,6 +9,7 @@ public enum ExceptionEnum {
     FORBIDDEN(HttpStatus.FORBIDDEN, "Forbidden"),
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "Technical error in the system"),
     INVALID_INPUT_PARAMETERS(HttpStatus.BAD_REQUEST, "Invalid input parameters"),
+    INVALID_REQUEST(HttpStatus.BAD_REQUEST, "Required request is missing"),
     NO_AUTH_ACCESS(HttpStatus.UNAUTHORIZED, "Unauthorized"),
     NO_AUTH_INFO(HttpStatus.NON_AUTHORITATIVE_INFORMATION, "Unauthorized"),
     NO_CONTENT(HttpStatus.NO_CONTENT, "No content"),

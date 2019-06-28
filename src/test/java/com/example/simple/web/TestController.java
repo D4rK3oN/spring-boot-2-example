@@ -2,6 +2,7 @@ package com.example.simple.web;
 
 import com.example.simple.util.FunctionalException;
 import com.example.simple.util.ExceptionEnum;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,6 +22,11 @@ public class TestController {
     @RequestMapping(value = "/constraintViolationException", method = RequestMethod.GET)
     public String testConstraintViolationException() throws ConstraintViolationException {
         throw new ConstraintViolationException(Collections.EMPTY_SET);
+    }
+
+    @RequestMapping(value = "/httpMessageNotReadableException", method = RequestMethod.GET)
+    public String httpMessageNotReadableException() throws HttpMessageNotReadableException {
+        throw new HttpMessageNotReadableException("Required request body is missing");
     }
 
     @RequestMapping(value = "/functionalException", method = RequestMethod.GET)

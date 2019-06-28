@@ -1,12 +1,13 @@
 package com.example.simple.config;
 
+import com.example.simple.util.ExceptionEnum;
 import com.example.simple.util.FunctionalException;
 import com.example.simple.web.response.GlobalExceptionResponse;
-import com.example.simple.util.ExceptionEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -53,6 +54,26 @@ public class GlobalExceptionHandler {
         return GlobalExceptionResponse.builder()
                 .code(ExceptionEnum.INVALID_INPUT_PARAMETERS.getHttpStatus().value())
                 .message(ExceptionEnum.INVALID_INPUT_PARAMETERS.getMessage())
+                .detail(ex.getClass().getSimpleName()
+                        .concat(" : ")
+                        .concat(ex.getMessage()))
+                .build();
+    }
+
+    /**
+     * Request exceptions
+     *
+     * @param ex HttpMessageNotReadableException
+     * @return GlobalExceptionResponse
+     */
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public GlobalExceptionResponse httpMessageNotReadableExceptionHandler(Exception ex) {
+        log.error("Exception thrown [{}]", ex.getClass().getSimpleName(), ex);
+
+        return GlobalExceptionResponse.builder()
+                .code(ExceptionEnum.INVALID_REQUEST.getHttpStatus().value())
+                .message(ExceptionEnum.INVALID_REQUEST.getMessage())
                 .detail(ex.getClass().getSimpleName()
                         .concat(" : ")
                         .concat(ex.getMessage()))
