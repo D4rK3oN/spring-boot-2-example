@@ -1,6 +1,7 @@
 package com.example.simple.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.querydsl.core.annotations.QueryEntity;
 import lombok.AllArgsConstructor;
@@ -18,6 +19,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @AllArgsConstructor
 @QueryEntity
 @Document(collection = "#{@mongoDbCollectionsConfig.getSimpleObjects()}")
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class Simple {
 
     @Id
@@ -29,6 +31,8 @@ public class Simple {
     private String simpleId;
 
     private String name;
+
+    private Integer age;
 
     @JsonIgnore
     public boolean isEmpty() {
