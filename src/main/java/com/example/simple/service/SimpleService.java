@@ -8,7 +8,7 @@ import java.util.Optional;
 
 public interface SimpleService {
 
-    List<Simple> findAllSimple(Optional<String> name);
+    List<Simple> findAllSimple(Optional<String> name, Optional<Integer> initialAge, Optional<Integer> finalAge);
 
     Simple findSimpleById(String simpleId) throws FunctionalException;
 

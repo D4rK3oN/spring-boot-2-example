@@ -14,8 +14,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -38,7 +36,7 @@ class SimpleServiceTest {
     void findAllSimpleWhenOk() {
         when(simpleRepository.findAll()).thenReturn(SIMPLE_LIST_OK);
 
-        final var response = simpleService.findAllSimple(Optional.empty());
+        final var response = simpleService.findAllSimple(Optional.empty(), Optional.empty(), Optional.empty());
 
         assertAll(
                 () -> assertTrue(response != null && !response.isEmpty()),
@@ -51,7 +49,7 @@ class SimpleServiceTest {
     void findAllSimpleWhenNoDataFound() {
         when(simpleRepository.findAll()).thenReturn(List.of());
 
-        final var emptyResponse = simpleService.findAllSimple(Optional.empty());
+        final var emptyResponse = simpleService.findAllSimple(Optional.empty(), Optional.empty(), Optional.empty());
 
         assertAll(
                 () -> assertTrue(emptyResponse != null && emptyResponse.isEmpty()),
@@ -60,7 +58,7 @@ class SimpleServiceTest {
 
         when(simpleRepository.findAll()).thenReturn(null);
 
-        final var nullResponse = simpleService.findAllSimple(Optional.empty());
+        final var nullResponse = simpleService.findAllSimple(Optional.empty(), Optional.empty(), Optional.empty());
 
         assertAll(
                 () -> assertTrue(nullResponse != null && nullResponse.isEmpty()),
@@ -73,7 +71,10 @@ class SimpleServiceTest {
         when(simpleRepository.findAllByNameIgnoreCaseLike(SIMPLE_LIST_OK.get(0).getName()))
                 .thenReturn(List.of(SIMPLE_LIST_OK.get(0)));
 
-        final var response = simpleService.findAllSimple(Optional.of(SIMPLE_LIST_OK.get(0).getName()));
+        final var response = simpleService.findAllSimple(
+                Optional.of(SIMPLE_LIST_OK.get(0).getName()),
+                Optional.empty(),
+                Optional.empty());
 
         assertAll(
                 () -> assertTrue(response != null && !response.isEmpty()),
