@@ -7,6 +7,7 @@ import com.example.simple.util.FunctionalException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 import java.util.Optional;
@@ -24,28 +25,24 @@ public class SimpleServiceImpl implements SimpleService {
 
     @Override
     public List<Simple> findAllSimple(Optional<String> name, Optional<Integer> initialAge, Optional<Integer> finalAge) {
-        final List<Simple> simpleList;
+        final List<Simple> simpleList = executeFindRequest(
+                evaluateFindRequest(name, initialAge, finalAge),
+                name.orElse(""),
+                initialAge.orElse(0),
+                finalAge.orElse(100)
+        );
 
-        switch (evaluateFindRequest(name, initialAge, finalAge)) {
-            case FIND_ALL:
-                simpleList = simpleRepository.findAll();
-                break;
-            case FIND_BY_ALL_FILTERS:
-                simpleList = simpleRepository.findAllByCustomFilters(name.get(), initialAge.orElse(0), finalAge.orElse(100));
-                break;
-            case FIND_BY_NAME:
-                simpleList = simpleRepository.findAllByNameIgnoreCaseLike(name.get());
-                break;
-            case FIND_BY_AGE:
-                simpleList = simpleRepository.findAllByAgeBetween(initialAge.orElse(0), finalAge.orElse(100));
-                break;
-            default:
-                return throwErrorEvalFindRequest(name.toString(), initialAge.toString(), finalAge.toString());
-        }
-
-        return simpleList != null ? simpleList : List.of();
+        return !CollectionUtils.isEmpty(simpleList) ? simpleList : List.of();
     }
 
+    /**
+     * Evaluate the type of find we must launch based on the input parameters.
+     *
+     * @param name
+     * @param initialAge
+     * @param finalAge
+     * @return Type find we must execute.
+     */
     private String evaluateFindRequest(Optional<String> name, Optional<Integer> initialAge, Optional<Integer> finalAge) {
         if (name.isPresent() && (initialAge.isPresent() || finalAge.isPresent()))
             return FIND_BY_ALL_FILTERS;
@@ -59,18 +56,28 @@ public class SimpleServiceImpl implements SimpleService {
         return FIND_ALL;
     }
 
-    private List<Simple> throwErrorEvalFindRequest(String name, String initialAge, String finalAge) {
-        throw new FunctionalException(
-                "Error evaluating find request",
-                ExceptionEnum.INTERNAL_SERVER_ERROR,
-                "Find by: name ["
-                        .concat(name)
-                        .concat("] initialAge [")
-                        .concat(initialAge)
-                        .concat("] finalAge [")
-                        .concat(finalAge)
-                        .concat("]")
-        );
+    /**
+     * Execute the find method we must launch based on the requestType.
+     *
+     * @param requestType
+     * @param name
+     * @param initialAge
+     * @param finalAge
+     * @return Simple list.
+     */
+    private List<Simple> executeFindRequest(String requestType, String name, Integer initialAge, Integer finalAge) {
+        switch (requestType) {
+            case FIND_ALL:
+                return simpleRepository.findAll();
+            case FIND_BY_ALL_FILTERS:
+                return simpleRepository.findAllByCustomFilters(name, initialAge, finalAge);
+            case FIND_BY_NAME:
+                return simpleRepository.findAllByNameIgnoreCaseLike(name);
+            case FIND_BY_AGE:
+                return simpleRepository.findAllByAgeBetween(initialAge, finalAge);
+            default:
+                throw new FunctionalException("Error evaluating find request", ExceptionEnum.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @Override

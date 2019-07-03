@@ -23,7 +23,8 @@ class SimpleServiceTest {
             Simple.builder().id("id_001").simpleId("01").name("Domino").build(),
             Simple.builder().id("id_002").simpleId("02").name("Cable").build(),
             Simple.builder().id("id_003").simpleId("03").name("Psylocke").build(),
-            Simple.builder().id("id_004").simpleId("04").name("Colossus").build()
+            Simple.builder().id("id_004").simpleId("04").name("Colossus").build(),
+            Simple.builder().id("id_005").simpleId("05").name("Deadpool").age(28).build()
     );
 
     @Mock
@@ -40,7 +41,7 @@ class SimpleServiceTest {
 
         assertAll(
                 () -> assertTrue(response != null && !response.isEmpty()),
-                () -> assertEquals(4, response.size()),
+                () -> assertEquals(5, response.size()),
                 () -> assertEquals(SIMPLE_LIST_OK, response)
         );
     }
@@ -80,6 +81,40 @@ class SimpleServiceTest {
                 () -> assertTrue(response != null && !response.isEmpty()),
                 () -> assertEquals(1, response.size()),
                 () -> assertEquals(List.of(SIMPLE_LIST_OK.get(0)), response)
+        );
+    }
+
+    @Test
+    void findAllSimpleBetweenAgesWhenOk() {
+        when(simpleRepository.findAllByAgeBetween(20, 30))
+                .thenReturn(List.of(SIMPLE_LIST_OK.get(4)));
+
+        final var response = simpleService.findAllSimple(
+                Optional.empty(),
+                Optional.of(20),
+                Optional.of(30));
+
+        assertAll(
+                () -> assertTrue(response != null && !response.isEmpty()),
+                () -> assertEquals(1, response.size()),
+                () -> assertEquals(List.of(SIMPLE_LIST_OK.get(4)), response)
+        );
+    }
+
+    @Test
+    void findAllSimpleByNameAndBetweenAgesWhenOk() {
+        when(simpleRepository.findAllByCustomFilters("pool", 20, 30))
+                .thenReturn(List.of(SIMPLE_LIST_OK.get(4)));
+
+        final var response = simpleService.findAllSimple(
+                Optional.of("pool"),
+                Optional.of(20),
+                Optional.of(30));
+
+        assertAll(
+                () -> assertTrue(response != null && !response.isEmpty()),
+                () -> assertEquals(1, response.size()),
+                () -> assertEquals(List.of(SIMPLE_LIST_OK.get(4)), response)
         );
     }
 
