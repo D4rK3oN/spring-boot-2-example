@@ -1,7 +1,7 @@
 package com.example.simple.config;
 
-import com.example.simple.config.response.GlobalExceptionResponse;
-import com.example.simple.config.util.ExceptionEnum;
+import com.example.simple.util.ExceptionEnum;
+import com.example.simple.web.response.GlobalExceptionResponse;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -49,6 +49,23 @@ class GlobalExceptionHandlerTest {
                         .code(ExceptionEnum.INVALID_INPUT_PARAMETERS.getHttpStatus().value())
                         .message(ExceptionEnum.INVALID_INPUT_PARAMETERS.getMessage())
                         .detail("ConstraintViolationException : ")
+                        .build(), response.getBody())
+        );
+    }
+
+    @Test
+    void testHttpMessageNotReadableExceptionHandler() {
+        UriComponentsBuilder builder = UriComponentsBuilder.fromPath(PATH.concat("/httpMessageNotReadableException"));
+
+        final var response = testRestTemplate.getForEntity(builder.build().toUri(), GlobalExceptionResponse.class);
+
+        assertAll(
+                () -> assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode()),
+                () -> assertNotNull(response.getBody()),
+                () -> assertEquals(GlobalExceptionResponse.builder()
+                        .code(ExceptionEnum.INVALID_REQUEST.getHttpStatus().value())
+                        .message(ExceptionEnum.INVALID_REQUEST.getMessage())
+                        .detail("HttpMessageNotReadableException : Required request body is missing")
                         .build(), response.getBody())
         );
     }

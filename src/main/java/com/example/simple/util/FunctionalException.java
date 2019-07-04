@@ -1,6 +1,5 @@
-package com.example.simple.config.exception;
+package com.example.simple.util;
 
-import com.example.simple.config.util.ExceptionEnum;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
