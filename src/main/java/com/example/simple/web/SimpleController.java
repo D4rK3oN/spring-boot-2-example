@@ -26,9 +26,17 @@ public class SimpleController {
     @RequestMapping(method = {RequestMethod.GET})
     public SimpleResponse findAllSimple(
             @RequestParam(value = "name", required = false)
-            @Size(min = 3, message = "The length of the name must be 3 or greater") final String name
+            @Size(min = 3, message = "The length of the name must be 3 or greater") final String name,
+            @RequestParam(value = "initialAge", required = false) final Integer initialAge,
+            @RequestParam(value = "finalAge", required = false) final Integer finalAge
     ) {
-        return SimpleResponse.builder().simpleList(simpleService.findAllSimple(Optional.ofNullable(name))).build();
+        return SimpleResponse.builder()
+                .simpleList(simpleService.findAllSimple(
+                        Optional.ofNullable(name),
+                        Optional.ofNullable(initialAge),
+                        Optional.ofNullable(finalAge)
+                ))
+                .build();
     }
 
     @RequestMapping(method = {RequestMethod.GET}, path = "/{simpleId}")

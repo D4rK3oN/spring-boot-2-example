@@ -42,7 +42,8 @@ class SimpleControllerTest {
 
     @Test
     void findAllSimpleWhenOk() {
-        when(simpleService.findAllSimple(Optional.empty())).thenReturn(SIMPLE_LIST_OK);
+        when(simpleService.findAllSimple(Optional.empty(), Optional.empty(), Optional.empty()))
+                .thenReturn(SIMPLE_LIST_OK);
 
         UriComponentsBuilder builder = UriComponentsBuilder.fromPath(PATH);
 
@@ -64,7 +65,8 @@ class SimpleControllerTest {
 
     @Test
     void findAllSimpleWhenNoDataFound() {
-        when(simpleService.findAllSimple(Optional.empty())).thenReturn(Collections.EMPTY_LIST);
+        when(simpleService.findAllSimple(Optional.empty(), Optional.empty(), Optional.empty()))
+                .thenReturn(Collections.EMPTY_LIST);
 
         UriComponentsBuilder builder = UriComponentsBuilder.fromPath(PATH);
 

@@ -26,5 +26,13 @@
     },
     "simpleId": "03",
     "name": "Colossus"
+  },
+  {
+    "_id": {
+      "$oid": "5d1b3dd7fd19fc27e027a65d"
+    },
+    "simpleId": "04",
+    "name": "Deadpool",
+    "age": 28
   }
 ]

@@ -14,8 +14,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -25,7 +23,8 @@ class SimpleServiceTest {
             Simple.builder().id("id_001").simpleId("01").name("Domino").build(),
             Simple.builder().id("id_002").simpleId("02").name("Cable").build(),
             Simple.builder().id("id_003").simpleId("03").name("Psylocke").build(),
-            Simple.builder().id("id_004").simpleId("04").name("Colossus").build()
+            Simple.builder().id("id_004").simpleId("04").name("Colossus").build(),
+            Simple.builder().id("id_005").simpleId("05").name("Deadpool").age(28).build()
     );
 
     @Mock
@@ -38,11 +37,11 @@ class SimpleServiceTest {
     void findAllSimpleWhenOk() {
         when(simpleRepository.findAll()).thenReturn(SIMPLE_LIST_OK);
 
-        final var response = simpleService.findAllSimple(Optional.empty());
+        final var response = simpleService.findAllSimple(Optional.empty(), Optional.empty(), Optional.empty());
 
         assertAll(
                 () -> assertTrue(response != null && !response.isEmpty()),
-                () -> assertEquals(4, response.size()),
+                () -> assertEquals(5, response.size()),
                 () -> assertEquals(SIMPLE_LIST_OK, response)
         );
     }
@@ -51,7 +50,7 @@ class SimpleServiceTest {
     void findAllSimpleWhenNoDataFound() {
         when(simpleRepository.findAll()).thenReturn(List.of());
 
-        final var emptyResponse = simpleService.findAllSimple(Optional.empty());
+        final var emptyResponse = simpleService.findAllSimple(Optional.empty(), Optional.empty(), Optional.empty());
 
         assertAll(
                 () -> assertTrue(emptyResponse != null && emptyResponse.isEmpty()),
@@ -60,7 +59,7 @@ class SimpleServiceTest {
 
         when(simpleRepository.findAll()).thenReturn(null);
 
-        final var nullResponse = simpleService.findAllSimple(Optional.empty());
+        final var nullResponse = simpleService.findAllSimple(Optional.empty(), Optional.empty(), Optional.empty());
 
         assertAll(
                 () -> assertTrue(nullResponse != null && nullResponse.isEmpty()),
@@ -73,12 +72,49 @@ class SimpleServiceTest {
         when(simpleRepository.findAllByNameIgnoreCaseLike(SIMPLE_LIST_OK.get(0).getName()))
                 .thenReturn(List.of(SIMPLE_LIST_OK.get(0)));
 
-        final var response = simpleService.findAllSimple(Optional.of(SIMPLE_LIST_OK.get(0).getName()));
+        final var response = simpleService.findAllSimple(
+                Optional.of(SIMPLE_LIST_OK.get(0).getName()),
+                Optional.empty(),
+                Optional.empty());
 
         assertAll(
                 () -> assertTrue(response != null && !response.isEmpty()),
                 () -> assertEquals(1, response.size()),
                 () -> assertEquals(List.of(SIMPLE_LIST_OK.get(0)), response)
+        );
+    }
+
+    @Test
+    void findAllSimpleBetweenAgesWhenOk() {
+        when(simpleRepository.findAllByAgeBetween(20, 30))
+                .thenReturn(List.of(SIMPLE_LIST_OK.get(4)));
+
+        final var response = simpleService.findAllSimple(
+                Optional.empty(),
+                Optional.of(20),
+                Optional.of(30));
+
+        assertAll(
+                () -> assertTrue(response != null && !response.isEmpty()),
+                () -> assertEquals(1, response.size()),
+                () -> assertEquals(List.of(SIMPLE_LIST_OK.get(4)), response)
+        );
+    }
+
+    @Test
+    void findAllSimpleByNameAndBetweenAgesWhenOk() {
+        when(simpleRepository.findAllByCustomFilters("pool", 20, 30))
+                .thenReturn(List.of(SIMPLE_LIST_OK.get(4)));
+
+        final var response = simpleService.findAllSimple(
+                Optional.of("pool"),
+                Optional.of(20),
+                Optional.of(30));
+
+        assertAll(
+                () -> assertTrue(response != null && !response.isEmpty()),
+                () -> assertEquals(1, response.size()),
+                () -> assertEquals(List.of(SIMPLE_LIST_OK.get(4)), response)
         );
     }
 

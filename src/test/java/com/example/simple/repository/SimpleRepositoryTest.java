@@ -28,7 +28,8 @@ class SimpleRepositoryTest {
             Simple.builder().id("5cd9768a7a7aea34787394d4").simpleId("00").name("Domino").build(),
             Simple.builder().id("5cd976ab7a7aea34787394d5").simpleId("01").name("Cable").build(),
             Simple.builder().id("5a993d5d9ccd732bf541a19f").simpleId("02").name("Psylocke").build(),
-            Simple.builder().id("5cd976ab7acd732bf541a19f").simpleId("03").name("Colossus").build()
+            Simple.builder().id("5cd976ab7acd732bf541a19f").simpleId("03").name("Colossus").build(),
+            Simple.builder().id("5d1b3dd7fd19fc27e027a65d").simpleId("04").name("Deadpool").age(28).build()
     );
 
     @Autowired
@@ -71,7 +72,7 @@ class SimpleRepositoryTest {
 
         assertAll(
                 () -> assertFalse(response.isEmpty()),
-                () -> assertEquals(4, response.size()),
+                () -> assertEquals(5, response.size()),
                 () -> assertEquals(SIMPLE_LIST_OK, response)
         );
     }
@@ -157,6 +158,64 @@ class SimpleRepositoryTest {
     }
 
     @Test
+    void findBetweenAgesWhenExistData() throws IOException {
+        loadFileInMongodb("mongodb/examples.simpleObjects.data.json");
+
+        final var response = simpleRepository.findAllByAgeBetween(20, 28);
+
+        assertAll(
+                () -> assertFalse(response.isEmpty()),
+                () -> assertEquals(List.of(Simple.builder()
+                        .id("5d1b3dd7fd19fc27e027a65d")
+                        .simpleId("04")
+                        .name("Deadpool")
+                        .age(28)
+                        .build()), response)
+        );
+    }
+
+    @Test
+    void findBetweenAgesWhenNoDataFound() throws IOException {
+        loadFileInMongodb("mongodb/examples.simpleObjects.data.json");
+
+        final var response = simpleRepository.findAllByAgeBetween(20, 25);
+
+        assertAll(
+                () -> assertTrue(response.isEmpty()),
+                () -> assertEquals(List.of(), response)
+        );
+    }
+
+    @Test
+    void findByNameAndBetweenAgesWhenExistData() throws IOException {
+        loadFileInMongodb("mongodb/examples.simpleObjects.data.json");
+
+        final var response = simpleRepository.findAllByCustomFilters("dead", 28, 35);
+
+        assertAll(
+                () -> assertFalse(response.isEmpty()),
+                () -> assertEquals(List.of(Simple.builder()
+                        .id("5d1b3dd7fd19fc27e027a65d")
+                        .simpleId("04")
+                        .name("Deadpool")
+                        .age(28)
+                        .build()), response)
+        );
+    }
+
+    @Test
+    void findByNameAndBetweenAgesWhenNoDataFound() throws IOException {
+        loadFileInMongodb("mongodb/examples.simpleObjects.data.json");
+
+        final var response = simpleRepository.findAllByCustomFilters("Domi", 20, 30);
+
+        assertAll(
+                () -> assertTrue(response.isEmpty()),
+                () -> assertEquals(List.of(), response)
+        );
+    }
+
+    @Test
     void saveWhenOk() throws IOException {
         loadFileInMongodb("mongodb/examples.simpleObjects.empty.json");
 
@@ -210,9 +269,9 @@ class SimpleRepositoryTest {
     void deleteWhenElementNotExist() throws IOException {
         loadFileInMongodb("mongodb/examples.simpleObjects.data.json");
 
-        simpleRepository.delete(Simple.builder().id("unknown").id("04").name("Testing").build());
+        simpleRepository.delete(Simple.builder().id("unknown").id("000").name("Testing").build());
 
-        final var findDeleted = simpleRepository.findBySimpleId("04");
+        final var findDeleted = simpleRepository.findBySimpleId("000");
 
         assertAll(
                 () -> assertFalse(findDeleted.isPresent()),
