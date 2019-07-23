@@ -1,0 +1,7 @@
+spring:
+  application:
+    name: simple-example-service
+#  cloud:
+#    config:
+#      failFast: false
+#      uri: http://config-server:8888
