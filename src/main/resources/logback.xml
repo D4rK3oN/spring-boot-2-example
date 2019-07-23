@@ -10,9 +10,9 @@
     </appender>
 
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${DEV_PATH}\Resources\SIMPLE_EXAMPLE\logs\simple_example.log</file>
+        <file>${DEV_PATH}\resources\simple-example\logs\simple_example.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>${DEV_PATH}\Resources\SIMPLE_EXAMPLE\logs\simple_example.%d{"yyyyMMdd"}.%i.log</fileNamePattern>
+            <fileNamePattern>${DEV_PATH}\resources\simple-example\logs\simple_example.%d{"yyyyMMdd"}.%i.log</fileNamePattern>
             <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
                 <maxFileSize>5MB</maxFileSize>
             </timeBasedFileNamingAndTriggeringPolicy>
