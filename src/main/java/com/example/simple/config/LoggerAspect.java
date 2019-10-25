@@ -1,16 +1,16 @@
 package com.example.simple.config;
 
+import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 
+@Slf4j
 @Aspect
 @Component
 public class LoggerAspect {
@@ -18,8 +18,6 @@ public class LoggerAspect {
     private static final String SERVICE_MANAGER = "execution(* com.example.*.service.*Service.*(..))";
     private static final String REPOSITORY_MANAGER = "execution(* com.example.*.repository.*Repository.*(..))";
     private static final String SPRING_DATA_REPOSITORY_MANAGER = "execution(* org.springframework.data.repository.*Repository.*(..))";
-
-    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     @Pointcut(CONTROLLER_MANAGER)
     public void logControllerLayer() {
@@ -64,14 +62,14 @@ public class LoggerAspect {
      */
     @Around("logSpringDataRepositoryLayer()")
     public Object printSpringDataTraces(final ProceedingJoinPoint joinPoint) throws Throwable {
-        logger.info("Invoked class [{}.{}] | Input Args [{}]",
+        log.info("Invoked class [{}.{}] | Input Args [{}]",
                 joinPoint.getSignature().getDeclaringType().getSimpleName(),
                 joinPoint.getSignature().getName(),
                 List.of(joinPoint.getArgs()).isEmpty() ? "EMPTY" : joinPoint.getArgs());
 
         final Object resultMethodExecution = joinPoint.proceed();
 
-        logger.info("Invoked class [{}.{}] | Output Response [{}]",
+        log.info("Invoked class [{}.{}] | Output Response [{}]",
                 joinPoint.getSignature().getDeclaringType().getSimpleName(),
                 joinPoint.getSignature().getName(),
                 resultMethodExecution);
@@ -85,7 +83,7 @@ public class LoggerAspect {
      * @param joinPoint
      */
     private void printInTrace(final ProceedingJoinPoint joinPoint) {
-        logger.info("Invoked class [{}.{}] | Input Args [{}]",
+        log.info("Invoked class [{}.{}] | Input Args [{}]",
                 joinPoint.getTarget().getClass().getSimpleName(),
                 joinPoint.getSignature().getName(),
                 CollectionUtils.arrayToList(joinPoint.getArgs()).isEmpty() ? "EMPTY" : joinPoint.getArgs());
@@ -98,7 +96,7 @@ public class LoggerAspect {
      * @param resultMethodExecution
      */
     private void printOutTrace(final ProceedingJoinPoint joinPoint, final Object resultMethodExecution) {
-        logger.info("Invoked class [{}.{}] | Output Response [{}]",
+        log.info("Invoked class [{}.{}] | Output Response [{}]",
                 joinPoint.getTarget().getClass().getSimpleName(),
                 joinPoint.getSignature().getName(),
                 resultMethodExecution);
