@@ -23,7 +23,7 @@ public class SimpleController {
 
     private final SimpleService simpleService;
 
-    @RequestMapping(method = {RequestMethod.GET})
+    @GetMapping
     public SimpleResponse findAllSimple(
             @RequestParam(value = "name", required = false)
             @Size(min = 3, message = "The length of the name must be 3 or greater") final String name,
@@ -39,12 +39,12 @@ public class SimpleController {
                 .build();
     }
 
-    @RequestMapping(method = {RequestMethod.GET}, path = "/{simpleId}")
+    @GetMapping(path = "/{simpleId}")
     public Simple findSimpleById(@PathVariable final String simpleId) throws FunctionalException {
         return simpleService.findSimpleById(simpleId);
     }
 
-    @RequestMapping(method = {RequestMethod.PUT}, path = "/{simpleId}")
+    @PutMapping(path = "/{simpleId}")
     public ResponseEntity<?> saveSimple(@PathVariable @NotEmpty final String simpleId, @RequestBody Simple simple)
             throws FunctionalException {
         simpleService.saveSimple(simpleId, simple);
@@ -57,7 +57,7 @@ public class SimpleController {
         ).build();
     }
 
-    @RequestMapping(method = {RequestMethod.DELETE}, path = "/{simpleId}")
+    @DeleteMapping(path = "/{simpleId}")
     public ResponseEntity<?> deleteSimple(@PathVariable @NotEmpty final String simpleId) throws FunctionalException {
         simpleService.deleteSimple(simpleId);
 
