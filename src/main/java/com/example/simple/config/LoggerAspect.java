@@ -44,11 +44,17 @@ public class LoggerAspect {
      */
     @Around("logControllerLayer() || logServiceLayer() || logRepositoryLayer()")
     public Object printTraces(final ProceedingJoinPoint joinPoint) throws Throwable {
-        printInTrace(joinPoint);
+        log.info("Invoked class [{}.{}] | Input Args -> {}",
+                joinPoint.getTarget().getClass().getSimpleName(),
+                joinPoint.getSignature().getName(),
+                CollectionUtils.arrayToList(joinPoint.getArgs()).isEmpty() ? "[EMPTY]" : joinPoint.getArgs());
 
         final Object resultMethodExecution = joinPoint.proceed();
 
-        printOutTrace(joinPoint, resultMethodExecution);
+        log.info("Invoked class [{}.{}] | Output Response -> {}",
+                joinPoint.getTarget().getClass().getSimpleName(),
+                joinPoint.getSignature().getName(),
+                resultMethodExecution);
 
         return resultMethodExecution;
     }
@@ -62,43 +68,18 @@ public class LoggerAspect {
      */
     @Around("logSpringDataRepositoryLayer()")
     public Object printSpringDataTraces(final ProceedingJoinPoint joinPoint) throws Throwable {
-        log.info("Invoked class [{}.{}] | Input Args [{}]",
+        log.info("Invoked class [{}.{}] | Input Args -> {}",
                 joinPoint.getSignature().getDeclaringType().getSimpleName(),
                 joinPoint.getSignature().getName(),
-                List.of(joinPoint.getArgs()).isEmpty() ? "EMPTY" : joinPoint.getArgs());
+                List.of(joinPoint.getArgs()).isEmpty() ? "[EMPTY]" : joinPoint.getArgs());
 
         final Object resultMethodExecution = joinPoint.proceed();
 
-        log.info("Invoked class [{}.{}] | Output Response [{}]",
+        log.info("Invoked class [{}.{}] | Output Response -> {}",
                 joinPoint.getSignature().getDeclaringType().getSimpleName(),
                 joinPoint.getSignature().getName(),
                 resultMethodExecution);
 
         return resultMethodExecution;
-    }
-
-    /**
-     * Print IN trace.
-     *
-     * @param joinPoint
-     */
-    private void printInTrace(final ProceedingJoinPoint joinPoint) {
-        log.info("Invoked class [{}.{}] | Input Args [{}]",
-                joinPoint.getTarget().getClass().getSimpleName(),
-                joinPoint.getSignature().getName(),
-                CollectionUtils.arrayToList(joinPoint.getArgs()).isEmpty() ? "EMPTY" : joinPoint.getArgs());
-    }
-
-    /**
-     * Print OUT trace.
-     *
-     * @param joinPoint
-     * @param resultMethodExecution
-     */
-    private void printOutTrace(final ProceedingJoinPoint joinPoint, final Object resultMethodExecution) {
-        log.info("Invoked class [{}.{}] | Output Response [{}]",
-                joinPoint.getTarget().getClass().getSimpleName(),
-                joinPoint.getSignature().getName(),
-                resultMethodExecution);
     }
 }

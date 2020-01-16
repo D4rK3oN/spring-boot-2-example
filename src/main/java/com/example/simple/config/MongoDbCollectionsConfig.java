@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Configuration;
 import javax.validation.constraints.NotNull;
 
 @Data
-@Configuration
+@Configuration("collections")
 @ConfigurationProperties(prefix = "spring.data.mongodb.collections")
 public class MongoDbCollectionsConfig {
 

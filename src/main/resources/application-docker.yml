@@ -1,0 +1,8 @@
+server:
+  port: 8082
+
+# MONGODB (MongoProperties)
+spring.data.mongodb:
+  host: mongodb
+  port: 27017
+  database: example

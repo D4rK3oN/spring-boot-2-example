@@ -4,10 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.querydsl.core.annotations.QueryEntity;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.IndexDirection;
 import org.springframework.data.mongodb.core.index.Indexed;
@@ -15,10 +13,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 @Data
 @Builder(toBuilder = true)
-@NoArgsConstructor
-@AllArgsConstructor
 @QueryEntity
-@Document(collection = "#{@mongoDbCollectionsConfig.getSimpleObjects()}")
+@Document(collection = "#{@collections.getSimpleObjects()}")
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class Simple {
 
