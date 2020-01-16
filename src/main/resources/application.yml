@@ -1,0 +1,2 @@
+spring.data.mongodb.collections:
+  simple-objects: simpleObjects
