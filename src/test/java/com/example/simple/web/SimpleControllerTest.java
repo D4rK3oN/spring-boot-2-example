@@ -55,10 +55,10 @@ class SimpleControllerTest {
                 () -> assertEquals(4, response.getBody().getSimpleList().size()),
                 () -> assertNotEquals(SimpleResponse.builder().simpleList(SIMPLE_LIST_OK).build(), response.getBody()),
                 () -> assertEquals(SimpleResponse.builder().simpleList(List.of(
-                        Simple.builder().simpleId("01").name("Domino").build(),
-                        Simple.builder().simpleId("02").name("Cable").build(),
-                        Simple.builder().simpleId("03").name("Psylocke").build(),
-                        Simple.builder().simpleId("04").name("Colossus").build()
+                        Simple.builder().id("01").name("Domino").build(),
+                        Simple.builder().id("02").name("Cable").build(),
+                        Simple.builder().id("03").name("Psylocke").build(),
+                        Simple.builder().id("04").name("Colossus").build()
                 )).build(), response.getBody())
         );
     }
@@ -96,7 +96,7 @@ class SimpleControllerTest {
         assertAll(
                 () -> assertEquals(HttpStatus.OK, response.getStatusCode()),
                 () -> assertNotNull(response.getBody()),
-                () -> assertEquals(Simple.builder().simpleId("01").name("Domino").build(), response.getBody())
+                () -> assertEquals(Simple.builder().id("01").name("Domino").build(), response.getBody())
         );
     }
 

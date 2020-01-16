@@ -22,8 +22,8 @@ import static org.mockito.Mockito.when;
 class LoggerAspectTest {
 
     private static final String HEADER_TRACE = " : Invoked class [LoggerAspectTest$TestService$MockitoMock$";
-    private static final String INPUT_TRACE = ".methodName] | Input Args [EMPTY]";
-    private static final String OUTPUT_TRACE = ".methodName] | Output Response [[LoggerAspectTest.Response(id=00, name=Test)]]";
+    private static final String INPUT_TRACE = ".methodName] | Input Args -> [EMPTY]";
+    private static final String OUTPUT_TRACE = ".methodName] | Output Response -> LoggerAspectTest.Response(id=00, name=Test)";
 
     @Mock
     private ProceedingJoinPoint joinPoint;
@@ -43,7 +43,7 @@ class LoggerAspectTest {
         when(joinPoint.getSignature()).thenReturn(signature);
         when(joinPoint.getSignature().getName()).thenReturn("methodName");
         when(joinPoint.getArgs()).thenReturn(new String[0]);
-        when(joinPoint.proceed()).thenReturn(List.of(new Response("00", "Test")));
+        when(joinPoint.proceed()).thenReturn(new Response("00", "Test"));
 
         // Create a stream to hold the output
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
