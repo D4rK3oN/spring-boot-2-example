@@ -10,10 +10,10 @@
 <br />
 <p align="center">
   <a href="https://github.com/D4rK3oN/spring-boot-2-simple-example">
-    <img src="images/spring-boot.png" alt="logo" width="250" height="130">
+    <img src="images/spring-boot-2.png" alt="logo">
   </a>
 
-  <h3 align="center">Microservices with Spring Boot</h3>
+  <h3 align="center">Microservices with Spring Boot 2</h3>
 
   <p align="center">
     A simple example of a microservice
@@ -32,7 +32,7 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-There are many great samples of microservices with Spring Boot available on GitHub.
+There are many great samples of microservices with Spring Boot 2 available on GitHub.
 <br />
 With the passage of time, I have thought of collecting in a mini-project all those tasks that I usually need in my day to day to accelerate my developments.
 
@@ -66,8 +66,8 @@ docker run -d -p 27017:27017 -v mongodb-vol:/data/db --name mongodb mongo
 
 #### Execute with docker
 ```sh
-docker pull d4rk3on/simple-example:{version}
-docker run -e DEV_PATH='/' -e SPRING_PROFILES_ACTIVE='docker' -p 8082:8082 -v microservices-vol:/resources --link mongodb --name simple-example d4rk3on/simple-example:{version}
+docker pull d4rk3on/spring-boot-2-simple-example:{version}
+docker run -e DEV_PATH='/' -e SPRING_PROFILES_ACTIVE='docker' -p 8082:8082 -v microservices-vol:/resources --link mongodb --name spring-boot-example d4rk3on/spring-boot-2-simple-example:{version}
 ```
 
 #### Execute without docker
@@ -80,7 +80,7 @@ git clone https://github.com/D4rK3oN/spring-boot-2-simple-example.git
 Add DEV_PATH var with the path where you want to save the logs, etc
 ```xml
 <!-- e.g. used in logback.xml -->
-<file>${DEV_PATH}/resources/simple-example/logs/simple_example.log</file>
+<file>${DEV_PATH}/resources/spring-boot-2-simple-example/logs/simple_example.log</file>
 ```
 
 3. Configure the properties of the application-dev.yml file (if you need it)
@@ -99,19 +99,6 @@ Program args: --spring.profiles.active=dev
 ## Roadmap
 
 See the [open issues](https://github.com/D4rK3oN/spring-boot-2-simple-example/issues) for a list of proposed features (and known issues).
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 <!-- MARKDOWN LINKS & IMAGES : https://www.markdownguide.org/basic-syntax/#reference-style-links -->
 [contributors-shield]: https://img.shields.io/github/contributors/D4rK3oN/spring-boot-2-simple-example.svg?style=flat-square
