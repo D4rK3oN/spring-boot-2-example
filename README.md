@@ -95,6 +95,10 @@ spring.data.mongodb:
 Program args: --spring.profiles.active=dev
 ```
 
+<p align="center">
+    <img width="600px" src="images/IntelliJ_run_debug_config.png" alt="run config">
+</p>
+
 <!-- ROADMAP -->
 ## Roadmap
 
