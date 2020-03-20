@@ -164,7 +164,7 @@
                 <configuration>
                     <container>
                         <ports>
-                            <port>8082</port>
+                            <port>9080</port>
                         </ports>
                     </container>
                     <from>

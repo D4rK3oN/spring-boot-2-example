@@ -67,7 +67,7 @@ docker run -d -p 27017:27017 -v mongodb-vol:/data/db --name mongodb mongo
 #### Execute with docker
 ```sh
 docker pull d4rk3on/spring-boot-2-simple-example:{version}
-docker run -e DEV_PATH='/' -e SPRING_PROFILES_ACTIVE='docker' -p 8082:8082 -v microservices-vol:/resources --link mongodb --name spring-boot-example d4rk3on/spring-boot-2-simple-example:{version}
+docker run -d -p 9080:9080 -e DEV_PATH='/' -e SPRING_PROFILES_ACTIVE='docker' -v microservices-vol:/resources --link mongodb --name spring-boot-example d4rk3on/spring-boot-2-simple-example:{version}
 ```
 
 #### Execute without docker
