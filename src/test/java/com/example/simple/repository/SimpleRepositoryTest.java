@@ -2,11 +2,11 @@ package com.example.simple.repository;
 
 import com.example.simple.config.MongoDbCollectionsConfig;
 import com.example.simple.domain.Simple;
-import com.mongodb.DBObject;
+import com.mongodb.BasicDBList;
 import com.mongodb.client.model.IndexOptions;
 import com.mongodb.client.model.Indexes;
-import com.mongodb.util.JSON;
 import org.apache.commons.io.FileUtils;
+import org.bson.BsonArray;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -48,20 +48,22 @@ class SimpleRepositoryTest {
      * @throws IOException
      */
     private void loadFileInMongodb(String path) throws IOException {
-        final var mongodbFile = FileUtils.readFileToString(
-                new ClassPathResource(path).getFile(),
-                Charset.defaultCharset()
-        );
-
-        final List<DBObject> dboList = (List<DBObject>) JSON.parse(mongodbFile);
-
         mongoOperations.dropCollection(mongoDbCollectionsConfig.getSimpleObjects());
 
         mongoOperations.getCollection(mongoDbCollectionsConfig.getSimpleObjects())
                 .createIndex(Indexes.ascending("simpleId"), new IndexOptions().unique(true));
 
-        for (DBObject dbo : dboList)
-            mongoOperations.save(dbo, mongoDbCollectionsConfig.getSimpleObjects());
+        final var mongodbFile = FileUtils.readFileToString(
+                new ClassPathResource(path).getFile(),
+                Charset.defaultCharset()
+        );
+
+        BasicDBList dbList = new BasicDBList();
+
+        dbList.addAll(BsonArray.parse(mongodbFile));
+
+        for (Object dbObject : dbList)
+            mongoOperations.save(dbObject, mongoDbCollectionsConfig.getSimpleObjects());
     }
 
     @Test
