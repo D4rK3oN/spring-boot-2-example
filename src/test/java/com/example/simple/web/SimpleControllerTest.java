@@ -2,10 +2,12 @@ package com.example.simple.web;
 
 import com.example.simple.domain.Simple;
 import com.example.simple.service.SimpleService;
-import com.example.simple.util.ExceptionEnum;
-import com.example.simple.util.FunctionalException;
-import com.example.simple.web.response.GlobalExceptionResponse;
 import com.example.simple.web.response.SimpleResponse;
+import com.github.d4rk3on.spring.mvc.model.Error;
+import com.github.d4rk3on.spring.mvc.model.response.GlobalExceptionResponse;
+import com.github.d4rk3on.spring.mvc.util.ErrorEnum;
+import com.github.d4rk3on.spring.mvc.util.exception.FunctionalException;
+import lombok.val;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -47,7 +49,7 @@ class SimpleControllerTest {
 
         UriComponentsBuilder builder = UriComponentsBuilder.fromPath(PATH);
 
-        var response = testRestTemplate.getForEntity(builder.build().toUri(), SimpleResponse.class);
+        val response = testRestTemplate.getForEntity(builder.build().toUri(), SimpleResponse.class);
 
         assertAll(
                 () -> assertEquals(HttpStatus.OK, response.getStatusCode()),
@@ -70,7 +72,7 @@ class SimpleControllerTest {
 
         UriComponentsBuilder builder = UriComponentsBuilder.fromPath(PATH);
 
-        final var response = testRestTemplate.getForEntity(builder.build().toUri(), SimpleResponse.class);
+        val response = testRestTemplate.getForEntity(builder.build().toUri(), SimpleResponse.class);
 
         assertAll(
                 () -> assertEquals(HttpStatus.OK, response.getStatusCode()),
@@ -91,7 +93,7 @@ class SimpleControllerTest {
 
         UriComponentsBuilder builder = UriComponentsBuilder.fromPath(PATH.concat("/01"));
 
-        var response = testRestTemplate.getForEntity(builder.build().toUri(), Simple.class);
+        val response = testRestTemplate.getForEntity(builder.build().toUri(), Simple.class);
 
         assertAll(
                 () -> assertEquals(HttpStatus.OK, response.getStatusCode()),
@@ -105,21 +107,29 @@ class SimpleControllerTest {
         when(simpleService.findSimpleById("00"))
                 .thenThrow(new FunctionalException(
                         "Not valid findBySimpleId response",
-                        ExceptionEnum.NO_DATA_FOUND,
+                        ErrorEnum.NO_DATA_FOUND,
                         "ID [00] not exist"));
 
         UriComponentsBuilder builder = UriComponentsBuilder.fromPath(PATH.concat("/00"));
 
-        final var response = testRestTemplate.getForEntity(builder.build().toUri(), GlobalExceptionResponse.class);
+        val response = testRestTemplate.getForEntity(builder.build().toUri(), GlobalExceptionResponse.class);
 
         assertAll(
                 () -> assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode()),
                 () -> assertNotNull(response.getBody()),
-                () -> assertEquals(GlobalExceptionResponse.builder()
-                        .code(ExceptionEnum.NO_DATA_FOUND.getHttpStatus().value())
-                        .message(ExceptionEnum.NO_DATA_FOUND.getMessage())
-                        .detail("ID [00] not exist")
-                        .build(), response.getBody())
+                () -> assertEquals(
+                        GlobalExceptionResponse.builder()
+                                .errors(
+                                        Collections.singletonList(
+                                                Error.builder()
+                                                        .httpStatus(ErrorEnum.NO_DATA_FOUND.getHttpStatus())
+                                                        .cause(ErrorEnum.NO_DATA_FOUND.getMessage())
+                                                        .message("Not valid findBySimpleId response >>> ID [00] not exist")
+                                                        .build()
+                                        )
+                                )
+                                .build(),
+                        response.getBody())
         );
     }
 
@@ -137,7 +147,7 @@ class SimpleControllerTest {
                 }
         );
 
-        final var response = testRestTemplate
+        val response = testRestTemplate
                 .exchange(builder.build().toUri(), HttpMethod.PUT, request, ResponseEntity.class);
 
         assertAll(
@@ -156,7 +166,7 @@ class SimpleControllerTest {
         doThrow(
                 new FunctionalException(
                         "Testing duplicate key exception in saveSimple method",
-                        ExceptionEnum.CONFLICT,
+                        ErrorEnum.CONFLICT,
                         "Index <simpleId> : duplicate key [01]")
         ).when(simpleService).saveSimple(eq("01"), any(Simple.class));
 
@@ -170,17 +180,25 @@ class SimpleControllerTest {
                 }
         );
 
-        final var response = testRestTemplate
+        val response = testRestTemplate
                 .exchange(builder.build().toUri(), HttpMethod.PUT, request, GlobalExceptionResponse.class);
 
         assertAll(
                 () -> assertEquals(HttpStatus.CONFLICT, response.getStatusCode()),
                 () -> assertNotNull(response.getBody()),
-                () -> assertEquals(GlobalExceptionResponse.builder()
-                        .code(ExceptionEnum.CONFLICT.getHttpStatus().value())
-                        .message(ExceptionEnum.CONFLICT.getMessage())
-                        .detail("Index <simpleId> : duplicate key [01]")
-                        .build(), response.getBody())
+                () -> assertEquals(
+                        GlobalExceptionResponse.builder()
+                                .errors(
+                                        Collections.singletonList(
+                                                Error.builder()
+                                                        .httpStatus(ErrorEnum.CONFLICT.getHttpStatus())
+                                                        .cause(ErrorEnum.CONFLICT.getMessage())
+                                                        .message("Testing duplicate key exception in saveSimple method >>> Index <simpleId> : duplicate key [01]")
+                                                        .build()
+                                        )
+                                )
+                                .build(),
+                        response.getBody())
         );
     }
 
@@ -190,7 +208,7 @@ class SimpleControllerTest {
 
         UriComponentsBuilder builder = UriComponentsBuilder.fromPath(PATH.concat("/01"));
 
-        final var response = testRestTemplate
+        val response = testRestTemplate
                 .exchange(builder.build().toUri(), HttpMethod.DELETE, HttpEntity.EMPTY, ResponseEntity.class);
 
         assertAll(
@@ -204,23 +222,31 @@ class SimpleControllerTest {
         doThrow(
                 new FunctionalException(
                         "Resource to delete not found",
-                        ExceptionEnum.NO_DATA_FOUND,
+                        ErrorEnum.NO_DATA_FOUND,
                         "ID [01] not exist")
         ).when(simpleService).deleteSimple(eq("01"));
 
         UriComponentsBuilder builder = UriComponentsBuilder.fromPath(PATH.concat("/01"));
 
-        final var response = testRestTemplate
+        val response = testRestTemplate
                 .exchange(builder.build().toUri(), HttpMethod.DELETE, HttpEntity.EMPTY, GlobalExceptionResponse.class);
 
         assertAll(
                 () -> assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode()),
                 () -> assertNotNull(response.getBody()),
-                () -> assertEquals(GlobalExceptionResponse.builder()
-                        .code(ExceptionEnum.NO_DATA_FOUND.getHttpStatus().value())
-                        .message(ExceptionEnum.NO_DATA_FOUND.getMessage())
-                        .detail("ID [01] not exist")
-                        .build(), response.getBody())
+                () -> assertEquals(
+                        GlobalExceptionResponse.builder()
+                                .errors(
+                                        Collections.singletonList(
+                                                Error.builder()
+                                                        .httpStatus(ErrorEnum.NO_DATA_FOUND.getHttpStatus())
+                                                        .cause(ErrorEnum.NO_DATA_FOUND.getMessage())
+                                                        .message("Resource to delete not found >>> ID [01] not exist")
+                                                        .build()
+                                        )
+                                )
+                                .build(),
+                        response.getBody())
         );
     }
 }
