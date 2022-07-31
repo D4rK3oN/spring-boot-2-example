@@ -2,7 +2,8 @@ package com.example.simple.service;
 
 import com.example.simple.domain.Simple;
 import com.example.simple.repository.SimpleRepository;
-import com.example.simple.util.FunctionalException;
+import com.github.d4rk3on.spring.mvc.util.exception.FunctionalException;
+import lombok.val;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -37,7 +38,7 @@ class SimpleServiceTest {
     void findAllSimpleWhenOk() {
         when(simpleRepository.findAll()).thenReturn(SIMPLE_LIST_OK);
 
-        final var response = simpleService.findAllSimple(Optional.empty(), Optional.empty(), Optional.empty());
+        val response = simpleService.findAllSimple(Optional.empty(), Optional.empty(), Optional.empty());
 
         assertAll(
                 () -> assertTrue(response != null && !response.isEmpty()),
@@ -50,7 +51,7 @@ class SimpleServiceTest {
     void findAllSimpleWhenNoDataFound() {
         when(simpleRepository.findAll()).thenReturn(List.of());
 
-        final var emptyResponse = simpleService.findAllSimple(Optional.empty(), Optional.empty(), Optional.empty());
+        val emptyResponse = simpleService.findAllSimple(Optional.empty(), Optional.empty(), Optional.empty());
 
         assertAll(
                 () -> assertTrue(emptyResponse != null && emptyResponse.isEmpty()),
@@ -59,7 +60,7 @@ class SimpleServiceTest {
 
         when(simpleRepository.findAll()).thenReturn(null);
 
-        final var nullResponse = simpleService.findAllSimple(Optional.empty(), Optional.empty(), Optional.empty());
+        val nullResponse = simpleService.findAllSimple(Optional.empty(), Optional.empty(), Optional.empty());
 
         assertAll(
                 () -> assertTrue(nullResponse != null && nullResponse.isEmpty()),
@@ -72,7 +73,7 @@ class SimpleServiceTest {
         when(simpleRepository.findAllByNameIgnoreCaseLike(SIMPLE_LIST_OK.get(0).getName()))
                 .thenReturn(List.of(SIMPLE_LIST_OK.get(0)));
 
-        final var response = simpleService.findAllSimple(
+        val response = simpleService.findAllSimple(
                 Optional.of(SIMPLE_LIST_OK.get(0).getName()),
                 Optional.empty(),
                 Optional.empty());
@@ -89,7 +90,7 @@ class SimpleServiceTest {
         when(simpleRepository.findAllByAgeBetween(20, 30))
                 .thenReturn(List.of(SIMPLE_LIST_OK.get(4)));
 
-        final var response = simpleService.findAllSimple(
+        val response = simpleService.findAllSimple(
                 Optional.empty(),
                 Optional.of(20),
                 Optional.of(30));
@@ -106,7 +107,7 @@ class SimpleServiceTest {
         when(simpleRepository.findAllByCustomFilters("pool", 20, 30))
                 .thenReturn(List.of(SIMPLE_LIST_OK.get(4)));
 
-        final var response = simpleService.findAllSimple(
+        val response = simpleService.findAllSimple(
                 Optional.of("pool"),
                 Optional.of(20),
                 Optional.of(30));
@@ -127,7 +128,7 @@ class SimpleServiceTest {
                         .name("Domino")
                         .build()));
 
-        final var response = simpleService.findSimpleById("01");
+        val response = simpleService.findSimpleById("01");
 
         assertAll(
                 () -> assertNotNull(response),
