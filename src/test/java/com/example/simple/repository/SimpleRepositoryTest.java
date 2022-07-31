@@ -2,11 +2,12 @@ package com.example.simple.repository;
 
 import com.example.simple.config.MongoDbCollectionsConfig;
 import com.example.simple.domain.Simple;
-import com.mongodb.DBObject;
+import com.mongodb.BasicDBList;
 import com.mongodb.client.model.IndexOptions;
 import com.mongodb.client.model.Indexes;
-import com.mongodb.util.JSON;
+import lombok.val;
 import org.apache.commons.io.FileUtils;
+import org.bson.BsonArray;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -41,34 +42,30 @@ class SimpleRepositoryTest {
     @Autowired
     private SimpleRepository simpleRepository;
 
-    /**
-     * Load the JSON file in the embed Mongodb.
-     *
-     * @param path
-     * @throws IOException
-     */
     private void loadFileInMongodb(String path) throws IOException {
-        final var mongodbFile = FileUtils.readFileToString(
-                new ClassPathResource(path).getFile(),
-                Charset.defaultCharset()
-        );
-
-        final List<DBObject> dboList = (List<DBObject>) JSON.parse(mongodbFile);
-
         mongoOperations.dropCollection(mongoDbCollectionsConfig.getSimpleObjects());
 
         mongoOperations.getCollection(mongoDbCollectionsConfig.getSimpleObjects())
                 .createIndex(Indexes.ascending("simpleId"), new IndexOptions().unique(true));
 
-        for (DBObject dbo : dboList)
-            mongoOperations.save(dbo, mongoDbCollectionsConfig.getSimpleObjects());
+        val mongodbFile = FileUtils.readFileToString(
+                new ClassPathResource(path).getFile(),
+                Charset.defaultCharset()
+        );
+
+        BasicDBList dbList = new BasicDBList();
+
+        dbList.addAll(BsonArray.parse(mongodbFile));
+
+        for (Object dbObject : dbList)
+            mongoOperations.save(dbObject, mongoDbCollectionsConfig.getSimpleObjects());
     }
 
     @Test
     void findAllWhenExistData() throws IOException {
         loadFileInMongodb("mongodb/examples.simpleObjects.data.json");
 
-        final var response = simpleRepository.findAll();
+        val response = simpleRepository.findAll();
 
         assertAll(
                 () -> assertFalse(response.isEmpty()),
@@ -81,7 +78,7 @@ class SimpleRepositoryTest {
     void findAllWhenNoExistData() throws IOException {
         loadFileInMongodb("mongodb/examples.simpleObjects.empty.json");
 
-        final var response = simpleRepository.findAll();
+        val response = simpleRepository.findAll();
 
         assertAll(
                 () -> assertTrue(response != null && response.isEmpty()),
@@ -93,7 +90,7 @@ class SimpleRepositoryTest {
     void findAllWhenNoExistCollection() {
         mongoOperations.dropCollection(mongoDbCollectionsConfig.getSimpleObjects());
 
-        final var response = simpleRepository.findAll();
+        val response = simpleRepository.findAll();
 
         assertAll(
                 () -> assertTrue(response != null && response.isEmpty()),
@@ -105,7 +102,7 @@ class SimpleRepositoryTest {
     void findBySimpleIdWhenExistData() throws IOException {
         loadFileInMongodb("mongodb/examples.simpleObjects.data.json");
 
-        final var response = simpleRepository.findBySimpleId("00");
+        val response = simpleRepository.findBySimpleId("00");
 
         assertAll(
                 () -> assertTrue(response.isPresent()),
@@ -121,7 +118,7 @@ class SimpleRepositoryTest {
     void findBySimpleIdWhenNoDataFound() throws IOException {
         loadFileInMongodb("mongodb/examples.simpleObjects.data.json");
 
-        final var response = simpleRepository.findBySimpleId("unknown");
+        val response = simpleRepository.findBySimpleId("unknown");
 
         assertAll(
                 () -> assertFalse(response.isPresent()),
@@ -133,7 +130,7 @@ class SimpleRepositoryTest {
     void findByNameWhenExistData() throws IOException {
         loadFileInMongodb("mongodb/examples.simpleObjects.data.json");
 
-        final var response = simpleRepository.findAllByNameIgnoreCaseLike("domi");
+        val response = simpleRepository.findAllByNameIgnoreCaseLike("domi");
 
         assertAll(
                 () -> assertFalse(response.isEmpty()),
@@ -149,7 +146,7 @@ class SimpleRepositoryTest {
     void findByNameWhenNoDataFound() throws IOException {
         loadFileInMongodb("mongodb/examples.simpleObjects.data.json");
 
-        final var response = simpleRepository.findAllByNameIgnoreCaseLike("unknown");
+        val response = simpleRepository.findAllByNameIgnoreCaseLike("unknown");
 
         assertAll(
                 () -> assertTrue(response.isEmpty()),
@@ -161,7 +158,7 @@ class SimpleRepositoryTest {
     void findBetweenAgesWhenExistData() throws IOException {
         loadFileInMongodb("mongodb/examples.simpleObjects.data.json");
 
-        final var response = simpleRepository.findAllByAgeBetween(20, 28);
+        val response = simpleRepository.findAllByAgeBetween(20, 28);
 
         assertAll(
                 () -> assertFalse(response.isEmpty()),
@@ -178,7 +175,7 @@ class SimpleRepositoryTest {
     void findBetweenAgesWhenNoDataFound() throws IOException {
         loadFileInMongodb("mongodb/examples.simpleObjects.data.json");
 
-        final var response = simpleRepository.findAllByAgeBetween(20, 25);
+        val response = simpleRepository.findAllByAgeBetween(20, 25);
 
         assertAll(
                 () -> assertTrue(response.isEmpty()),
@@ -190,7 +187,7 @@ class SimpleRepositoryTest {
     void findByNameAndBetweenAgesWhenExistData() throws IOException {
         loadFileInMongodb("mongodb/examples.simpleObjects.data.json");
 
-        final var response = simpleRepository.findAllByCustomFilters("dead", 28, 35);
+        val response = simpleRepository.findAllByCustomFilters("dead", 28, 35);
 
         assertAll(
                 () -> assertFalse(response.isEmpty()),
@@ -207,7 +204,7 @@ class SimpleRepositoryTest {
     void findByNameAndBetweenAgesWhenNoDataFound() throws IOException {
         loadFileInMongodb("mongodb/examples.simpleObjects.data.json");
 
-        final var response = simpleRepository.findAllByCustomFilters("Domi", 20, 30);
+        val response = simpleRepository.findAllByCustomFilters("Domi", 20, 30);
 
         assertAll(
                 () -> assertTrue(response.isEmpty()),
@@ -221,7 +218,7 @@ class SimpleRepositoryTest {
 
         simpleRepository.save(Simple.builder().simpleId("01").name("Testing").build());
 
-        final var response = simpleRepository.findAll();
+        val response = simpleRepository.findAll();
 
         assertAll(
                 () -> assertFalse(response.isEmpty()),
@@ -242,7 +239,7 @@ class SimpleRepositoryTest {
     void deleteWhenOk() throws IOException {
         loadFileInMongodb("mongodb/examples.simpleObjects.data.json");
 
-        final var exampleToDelete = simpleRepository.findBySimpleId("00");
+        val exampleToDelete = simpleRepository.findBySimpleId("00");
 
         assertAll(
                 () -> assertTrue(exampleToDelete.isPresent()),
@@ -257,7 +254,7 @@ class SimpleRepositoryTest {
 
         simpleRepository.delete(exampleToDelete.get());
 
-        final var findDeleted = simpleRepository.findBySimpleId("00");
+        val findDeleted = simpleRepository.findBySimpleId("00");
 
         assertAll(
                 () -> assertFalse(findDeleted.isPresent()),
@@ -271,7 +268,7 @@ class SimpleRepositoryTest {
 
         simpleRepository.delete(Simple.builder().id("unknown").id("000").name("Testing").build());
 
-        final var findDeleted = simpleRepository.findBySimpleId("000");
+        val findDeleted = simpleRepository.findBySimpleId("000");
 
         assertAll(
                 () -> assertFalse(findDeleted.isPresent()),
